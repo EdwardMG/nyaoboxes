@@ -39,10 +39,23 @@ module NyaoBoxes
     load
   end
 
+  def self.update_dwarfrc name
+    unless File.exist? ENV["HOME"] + "/dwarfboxes"
+      Dir.mkdir ENV["HOME"] + "/dwarfboxes"
+    end
+
+    File.write(
+      ENV["HOME"] + "/.dwarfrc",
+      "storage_file: dwarfboxes/" + name
+    )
+  end
+
   def self.select_box
     boxes = data.keys - ["current_box"]
     data["current_box"] = boxes.fzf.first
     save
+    update_dwarfrc data["current_box"]
+    Ev.DrawDwarfCodebase
     Ex.redraw!
   end
 
